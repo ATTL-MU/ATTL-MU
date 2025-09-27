@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Products - ATTL (MU)</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <h1>ATTL (MU)</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="products.html">Products</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <h2>Products Available</h2>
+  <p>Use the form below to add new products. Products are stored locally in your browser (LocalStorage) so you can update quickly without any IT skills.</p>
+
+  <section class="product-form">
+    <h3>Add / Edit Product</h3>
+    <label>Product Name<br/><input id="p_name" placeholder="e.g. Gold Doré"></label><br/>
+    <label>Origin<br/><input id="p_origin" placeholder="e.g. Sierra Leone"></label><br/>
+    <label>Quantity (kg)<br/><input id="p_qty" type="number" placeholder="e.g. 50"></label><br/>
+    <label>Specification / Notes<br/><textarea id="p_spec" placeholder="Purity, grade, packaging"></textarea></label><br/>
+    <label>Image (optional)<br/><input id="p_image" type="file" accept="image/*"></label><br/>
+    <button id="addBtn">Add / Save Product</button>
+    <button id="clearBtn">Clear All Products</button>
+  </section>
+
+  <section id="catalog">
+    <h3>Product Catalog</h3>
+    <div id="productsGrid" class="products-grid"></div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>© 2025 ATTL (MU).</p>
+  </div>
+</footer>
+
+<script>
+function dataURLfromFile(file){ return new Promise((res, rej)=>{ const reader=new FileReader(); reader.onload=e=>res(e.target.result); reader.onerror=rej; reader.readAsDataURL(file); }); }
+
+async function addProduct(){
+  const name=document.getElementById('p_name').value.trim();
+  const origin=document.getElementById('p_origin').value.trim();
+  const qty=document.getElementById('p_qty').value;
+  const spec=document.getElementById('p_spec').value.trim();
+  const imgInput=document.getElementById('p_image');
+  if(!name){ alert('Please enter product name'); return; }
+  let img='';
+  if(imgInput.files.length>0){ img=await dataURLfromFile(imgInput.files[0]); }
+  const products=JSON.parse(localStorage.getItem('attl_products')||'[]');
+  products.unshift({id:Date.now(),name,origin,qty,spec,img});
+  localStorage.setItem('attl_products', JSON.stringify(products));
+  renderProducts();
+  document.getElementById('p_name').value=''; document.getElementById('p_origin').value=''; document.getElementById('p_qty').value=''; document.getElementById('p_spec').value=''; imgInput.value='';
+}
+
+function renderProducts(){
+  const grid=document.getElementById('productsGrid');
+  const products=JSON.parse(localStorage.getItem('attl_products')||'[]');
+  if(!products.length){ grid.innerHTML='<p>No products listed yet.</p>'; return; }
+  grid.innerHTML='';
+  for(const p of products){
+    const card=document.createElement('div'); card.className='card';
+    const imgHtml = p.img ? `<img src="${p.img}" alt="${p.name}">` : '';
+    card.innerHTML = `<h4>${p.name}</h4><div class="meta">Origin: ${p.origin} | Qty: ${p.qty} kg</div>${imgHtml}<p>${p.spec}</p><button onclick="deleteProduct(${p.id})">Delete</button>`;
+    grid.appendChild(card);
+  }
+}
+
+function deleteProduct(id){
+  let products=JSON.parse(localStorage.getItem('attl_products')||'[]');
+  products = products.filter(p=>p.id!==id);
+  localStorage.setItem('attl_products', JSON.stringify(products));
+  renderProducts();
+}
+
+function clearProducts(){ if(confirm('Clear all products?')){ localStorage.removeItem('attl_products'); renderProducts(); } }
+
+document.getElementById('addBtn').addEventListener('click', addProduct);
+document.getElementById('clearBtn').addEventListener('click', clearProducts);
+window.addEventListener('load', renderProducts);
+</script>
+
+</body>
+</html>

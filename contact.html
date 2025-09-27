@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Contact - ATTL (MU)</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <h1>ATTL (MU)</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="products.html">Products</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <h2>Contact Us</h2>
+  <p>Use the quick message form below — it will open your email client to send a message to our inbox. Alternatively email directly to <strong>christian.clement@attl-mu.com</strong>.</p>
+
+  <form id="contactForm" onsubmit="sendMail(event)">
+    <label>Your name<br/><input id="c_name" required></label><br/>
+    <label>Your email<br/><input id="c_email" type="email" required></label><br/>
+    <label>Message<br/><textarea id="c_msg" rows="6" required></textarea></label><br/>
+    <button type="submit">Send Message</button>
+  </form>
+
+  <h3>Office</h3>
+  <p>ATTL (MU)<br/>Unit E5, Avenue de la Tourelle, Tamarin 90908, Black River, Mauritius<br/>Phone: +230 5914 0369</p>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap"><p>© 2025 ATTL (MU).</p></div>
+</footer>
+
+<script>
+function sendMail(e){
+  e.preventDefault();
+  const name=document.getElementById('c_name').value;
+  const email=document.getElementById('c_email').value;
+  const msg=document.getElementById('c_msg').value;
+  const subject = encodeURIComponent('Website enquiry from '+name);
+  const body = encodeURIComponent('Name: '+name+'\nEmail: '+email+'\n\n'+msg);
+  window.location.href = 'mailto:christian.clement@attl-mu.com?subject='+subject+'&body='+body;
+}
+</script>
+
+</body>
+</html>
